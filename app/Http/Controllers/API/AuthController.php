@@ -12,7 +12,7 @@ class AuthController extends Controller
 {
     public function signup(Request $request)
     {
-        //make use for validate form request field 
+        //make use for validate form request field
         $validateUser = Validator::make(
             $request->all(),
             [
@@ -70,16 +70,15 @@ class AuthController extends Controller
             return response()->json([
                 'status' => true,
                 'message' => 'User Logged In Successfully',
-                // createToken is method of Sanctum inside this method any key passed 
+                // createToken is method of Sanctum inside this method any key passed
                 'token' => $authUser->createToken('API Token')->plainTextToken,
                 'token_type' => 'bearer'
             ], 200);
-        } else {
-            return response()->json([
-                'status' => false,
-                'message' => 'Email Or Password Dose Not Match',
-            ], 401);
         }
+        return response()->json([
+            'status' => false,
+            'message' => 'Email Or Password Dose Not Match',
+        ], 401);
     }
 
     public function logout(Request $request)
