@@ -13,9 +13,11 @@ class PostController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $data = Post::all(); //paginate pending
+        $defaultPagination = 3;
+        $limit = !empty($request->limit) ? $request->limit : $defaultPagination;
+        $data = Post::paginate($limit);
         return response()->json([
             'status' => true,
             'message' => 'All Post',
@@ -26,7 +28,7 @@ class PostController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(PostRequest $request) //changes complete
+    public function store(PostRequest $request)
     {
         $img = $request->image;
         $ext = $img->getClientOriginalExtension();
@@ -51,7 +53,7 @@ class PostController extends Controller
      */
     public function show(string $id)
     {
-        $data = Post::findOrFail($id);  //changes done
+        $data = Post::findOrFail($id);
 
         return response()->json([
             'status' => true,
@@ -63,7 +65,7 @@ class PostController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(PostRequest $request, string $id) //changes complete
+    public function update(PostRequest $request, string $id)
     {
         $post = Post::select('id', 'image')->get();
 
@@ -98,7 +100,7 @@ class PostController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id) //changes complete
+    public function destroy(string $id)
     {
         $post =  Post::findOrFail($id);
 

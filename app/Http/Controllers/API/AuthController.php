@@ -5,32 +5,14 @@ namespace App\Http\Controllers\API;
 use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Auth\AuthRequest;
+use App\Http\Requests\Login\LoginRequest;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Validator;
 
 class AuthController extends Controller
 {
-    public function signup(Request $request)
+    public function signup(AuthRequest $request)
     {
-        //make use for validate form request field
-        $validateUser = Validator::make(
-            $request->all(),
-            [
-                'name' => 'required',
-                'email' => 'required|email|unique:users,email',
-                'password' => 'required'
-            ]
-        );
-
-        //fails methods of Validator class
-        if ($validateUser->fails()) {
-            return response()->json([
-                'status' => false,
-                'message' => 'Validation Error',
-                'errors' => $validateUser->errors()->all()
-            ], 401);
-        }
-
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
@@ -44,25 +26,8 @@ class AuthController extends Controller
         ], 200);
     }
 
-    public function login(Request $request)
+    public function login(LoginRequest $request)
     {
-        $validateUser = Validator::make(
-            $request->all(),
-            [
-                'email' => 'required|email',
-                'password' => 'required'
-            ]
-        );
-
-        //fails methods of Validator class
-        if ($validateUser->fails()) {
-            return response()->json([
-                'status' => false,
-                'message' => 'Authentication Fails',
-                'errors' => $validateUser->errors()->all()
-            ], 404);
-        }
-
         // attempt use for checking field inside the database
         // auth class method (attempt)
         if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
